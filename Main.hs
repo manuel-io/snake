@@ -112,7 +112,7 @@ getRandom :: R.RandomGen g => g -> [a] -> (Int, g)
 getRandom gen list = R.randomR (1, length list) gen 
 
 updateWorld :: Coord -> Float -> World -> World
-updateWorld (n, m) num world =
+updateWorld (n, m) _ world =
   let
     snake' = makeMove (nextMove world) (snake world) 
   in
@@ -132,9 +132,9 @@ updateWorld (n, m) num world =
           world { snake = snake'', score = score', food = food', random = newGen }
       | (head' snake') `elem` (body' snake') = world { status = 1 }
       | fst (head' snake') < 0 = world { status = 1 }
-      | fst (head' snake') > (round (width/square)) = world { status = 1 }
+      | fst (head' snake') > n = world { status = 1 }
       | snd (head' snake') < 0 = world { status = 1 }
-      | snd (head' snake') > (round (height/square)) = world { status = 1 }
+      | snd (head' snake') > m = world { status = 1 }
       | otherwise = world { snake = snake' } 
 
 moveBody :: Coord -> [Coord] -> [Coord]

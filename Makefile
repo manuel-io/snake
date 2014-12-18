@@ -11,4 +11,5 @@ $(TARGET): Main.hs
 clean:
 	rm -f *.o *.hi
 	rm -f $(TARGET)
+	rm -rf dist
 	rmdir "$$(dirname $(TARGET))"
