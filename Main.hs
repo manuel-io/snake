@@ -3,7 +3,7 @@ where
 
 import Graphics.Gloss.Interface.Pure.Game
 import Data.Monoid
-import qualified System.Random as R
+import qualified System.Random as Random
 
 type Coord = (Int, Int)
 
@@ -17,43 +17,37 @@ data World = World { nextMove :: Move
                    , snake :: Snake
                    , food :: Coord
                    , score :: Int
-                   , random :: R.StdGen
+                   , random :: Random.StdGen
                    , status :: Int
                    } deriving (Show)
 
 square :: Float
 square = 15.0
 
-width :: Float
-width = 500.0
-
-height :: Float
-height = 500.0
+size :: Float
+size = 500.0
 
 main :: IO ()
 main = do
-  ran <- R.getStdGen
-  play (InWindow "Snake" (round width + 20, round height + 20) (10, 10))
+  ran <- Random.getStdGen
+  play (InWindow "Snake" (round size + 20, round size + 20) (10, 10))
     black
     9
     (World SUp (initSnake) (20, 20) 0 ran 0)
-    (drawWorld)
+    (drawWorld squares)
     (handleEvent)
-    (updateWorld (squares, squares))
+    (updateWorld squares)
   where
     initSnake = Snake (10, 10) [(10, 9), (10, 8), (10, 7), (10, 6)]
-    squares = round (width/square)
-
-int2Float:: Int -> Float
-int2Float i = fromIntegral i
+    squares = round (size/square)
 
 drawBlock :: Coord -> Picture
 drawBlock (x, y) =
   polygon [(x', y'), (x' + s, y'), (x' + s, y' + s), (x', y' + s)]
   where
     s = square
-    x' = s * (int2Float x)
-    y' = s * (int2Float y)
+    x' = s * (fromIntegral x)
+    y' = s * (fromIntegral y)
 
 drawHead :: Coord -> Picture
 drawHead coord = Color white $ drawBlock coord
@@ -71,28 +65,27 @@ drawSnake snake = [ drawHead $ head' snake
 drawFood :: Coord -> [Picture]
 drawFood coord = [Color red $ drawBlock coord] 
 
-drawGrid :: [Picture] -> [Picture]
-drawGrid grid =
-  if l < width/square
-  then
-    drawGrid (grid ++
-      [ Color red $ Line [(square*l, 0), (square*l, width)]
-      , Color red $ Line [(0, square*l), (height, square*l)]
+drawGrid :: Int -> [Picture] -> [Picture]
+drawGrid squares grid =
+  if l < (fromIntegral squares) + 1 then
+    drawGrid squares (grid ++
+      [ Color red $ Line [(square*l, 0), (square*l, size)]
+      , Color red $ Line [(0, square*l), (size, square*l)]
       ]
     )
-  else
-    grid
-  where
-    l = (int2Float $ length grid)/2
+  else grid
+  where l = (fromIntegral $ length grid)/2
 
-drawWorld :: World -> Picture
-drawWorld world =
+drawWorld :: Int -> World -> Picture
+drawWorld squares world =
   case (status world) of
     0 ->
-      Translate (-width/2) (-height/2)
+      Translate (-size/2) (-size/2)
       $ pictures
-      $ drawGrid [] ++ drawSnake (snake world) ++ drawFood (food world)
-    1 -> Translate (-width/2) (-height/2)
+      $ (drawGrid squares [])
+        ++ drawSnake (snake world)
+        ++ drawFood (food world)
+    1 -> Translate (-size/2) (-size/2)
       $ Color white
       $ Scale 0.2 0.2
       $ Text ("Score: " ++ (show (score world)))
@@ -108,11 +101,11 @@ handleEvent (EventKey (SpecialKey KeyRight) Down _ _) world =
   world { nextMove = SRight }
 handleEvent _ world = world
 
-getRandom :: R.RandomGen g => g -> [a] -> (Int, g)
-getRandom gen list = R.randomR (1, length list) gen 
+getRandom :: Random.RandomGen g => g -> [a] -> (Int, g)
+getRandom gen list = Random.randomR (1, length list) gen 
 
-updateWorld :: Coord -> Float -> World -> World
-updateWorld (n, m) _ world =
+updateWorld :: Int -> Float -> World -> World
+updateWorld n _ world =
   let
     snake' = makeMove (nextMove world) (snake world) 
   in
@@ -125,7 +118,7 @@ updateWorld (n, m) _ world =
           newBody = (head' snake'):(body' snake')
           snake'' = Snake (head' snake') newBody
           score' = (score world) + 1
-          list = [(x, y) | x <- [0..m-1], y <- [0..n-1]]
+          list = [(x, y) | x <- [0..n-1], y <- [0..n-1]]
           (randNumber, newGen) = getRandom gen list
           food' = list !! randNumber
         in
@@ -134,7 +127,7 @@ updateWorld (n, m) _ world =
       | fst (head' snake') < 0 = world { status = 1 }
       | fst (head' snake') > n = world { status = 1 }
       | snd (head' snake') < 0 = world { status = 1 }
-      | snd (head' snake') > m = world { status = 1 }
+      | snd (head' snake') > n = world { status = 1 }
       | otherwise = world { snake = snake' } 
 
 moveBody :: Coord -> [Coord] -> [Coord]
