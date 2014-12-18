@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/blkdev/snake.svg?branch=master)](https://travis-ci.org/blkdev/snake)
+
 ## Download
     git clone https://github.com/Blkdev/snake.git
 
