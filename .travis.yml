@@ -3,7 +3,10 @@ language: haskell
 notifications:
   email: false
 
+os:
+  - linux
+  - osx
+  - windows
+
 ghc:
-  - 7.8
   - 7.6
-  - 7.4
