@@ -6,7 +6,6 @@ notifications:
 os:
   - linux
   - osx
-  - windows
 
 ghc:
   - 7.6
