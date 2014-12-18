@@ -17,3 +17,4 @@
 
 ## Run
     ./bin/snake
+    ./dist/build/snake/snake
