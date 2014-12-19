@@ -101,8 +101,8 @@ handleEvent (EventKey (SpecialKey KeyRight) Down _ _) world =
   world { nextMove = SRight }
 handleEvent _ world = world
 
-getRandom :: Random.RandomGen g => g -> [a] -> (Int, g)
-getRandom gen list = Random.randomR (1, length list) gen 
+getRandom :: Random.RandomGen g => g -> Int -> (Int, g)
+getRandom gen len = Random.randomR (0, len) gen 
 
 updateWorld :: Int -> Float -> World -> World
 updateWorld n _ world =
@@ -119,7 +119,7 @@ updateWorld n _ world =
           snake'' = Snake (head' snake') newBody
           score' = (score world) + 1
           list = [(x, y) | x <- [0..n-1], y <- [0..n-1]]
-          (randNumber, newGen) = getRandom gen list
+          (randNumber, newGen) = getRandom gen ((length list)-1)
           food' = list !! randNumber
         in
           world { snake = snake'', score = score', food = food', random = newGen }
