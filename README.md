@@ -9,12 +9,14 @@
     yum install -y ghc-OpenGL-devel ghc-OpenGLRaw-devel
     yum install -y freeglut-devel
 
-## Build
+## Prepare
     cabal update
+    cabal install cabal-install
+    cabal sandbox init
+
+## Build
     cabal install --only-dependencies --enable-tests
     cabal configure --enable-tests && cabal build && cabal test
-    make
 
 ## Run
-    ./bin/snake
-    ./dist/build/snake/snake
+    cabal run

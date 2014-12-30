@@ -1,15 +1,13 @@
-CCLD := ghc
-TARGET = bin/snake
-ARGS := -O2 -threaded
+build:
+	cabal install --only-dependencies --enable-tests
+	cabal configure --enable-tests && cabal build && cabal test
+.PHONY: build
 
-$(TARGET): Main.hs
-	mkdir -p "$$(dirname $(TARGET))"
-	$(CCLD) -o $(TARGET) $(ARGS) $<
-
-.PHONY: clean
+run:
+	cabal run
+.PHONY: run
 
 clean:
 	rm -f *.o *.hi
-	rm -f $(TARGET)
 	rm -rf dist
-	rmdir "$$(dirname $(TARGET))"
+.PHONY: clean
