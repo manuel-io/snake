@@ -58,9 +58,9 @@ drawBody coords = Color white
   $ map drawBlock coords
 
 drawSnake :: Snake -> [Picture]
-drawSnake snake = [ drawHead $ head' snake
-                  , drawBody $ body' snake
-                  ] 
+drawSnake snake' = [ drawHead $ head' snake'
+                   , drawBody $ body' snake'
+                   ] 
 
 drawFood :: Coord -> [Picture]
 drawFood coord = [Color red $ drawBlock coord] 
@@ -79,16 +79,16 @@ drawGrid squares grid =
 drawWorld :: Int -> World -> Picture
 drawWorld squares world =
   case (status world) of
-    0 ->
+    1 -> Translate (-size/2) (-size/2)
+      $ Color white
+      $ Scale 0.2 0.2
+      $ Text ("Score: " ++ (show (score world)))
+    _ ->
       Translate (-size/2) (-size/2)
       $ pictures
       $ (drawGrid squares [])
         ++ drawSnake (snake world)
         ++ drawFood (food world)
-    1 -> Translate (-size/2) (-size/2)
-      $ Color white
-      $ Scale 0.2 0.2
-      $ Text ("Score: " ++ (show (score world)))
 
 handleEvent :: Event -> World -> World
 handleEvent (EventKey (SpecialKey KeyDown) Down _ _) world =
