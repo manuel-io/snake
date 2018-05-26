@@ -1,24 +1,28 @@
 # Snake
-[![Build Status](https://travis-ci.org/blkdev/snake.svg?branch=master)](https://travis-ci.org/blkdev/snake)
+![Build Status](https://travis-ci.org/manuel-io/snake.svg?branch=master)
 
-## Download
-    git clone https://github.com/blkdev/snake.git
+---
 
-## Update OS
+## Installation and usage
+
+### Download
+    git clone https://github.com/manuel-io/snake.git
+
+### Update OS
     yum update
     yum install -y ghc-OpenGL-devel ghc-OpenGLRaw-devel
     yum install -y freeglut-devel
 
-## Prepare
+### Prepare
     cabal update
     cabal install cabal-install
     cabal sandbox init
 
-## Build
+### Build
     cabal install --only-dependencies --enable-tests
     cabal configure --enable-tests
     cabal build && cabal test
     cabal install
 
-## Run
+### Run
     cabal run
